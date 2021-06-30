@@ -17,16 +17,16 @@ type AuthMongo struct {
 	redis *redis.Client
 }
 
-func (a *AuthMongo) SetToken(token string) (string, error) {
-	err := a.redis.Set("token", token, time.Minute * 30).Err()
+func (a *AuthMongo) SetAccessToken(token string) (string, error) {
+	err := a.redis.Set("Access_token", token, time.Minute * 30).Err()
 	if err != nil {
 		return "", err
 	}
 	return token, nil
 }
 
-func (a *AuthMongo) GetToken(token string) (string, error) {
-	val, err := a.redis.Get("token").Result()
+func (a *AuthMongo) GetAccessToken(token string) (string, error) {
+	val, err := a.redis.Get("Access_token").Result()
 	if err != nil {
 		return "", err
 	}
@@ -35,6 +35,26 @@ func (a *AuthMongo) GetToken(token string) (string, error) {
 	}
 	return token, err
 }
+
+func (a *AuthMongo) SetRefreshToken(token string) (string, error) {
+	err := a.redis.Set("Refresh_token", token, time.Hour * 12).Err()
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}
+
+func (a *AuthMongo) GetRefreshToken(token string) (string, error) {
+	val, err := a.redis.Get("Refresh_token").Result()
+	if err != nil {
+		return "", err
+	}
+	if val != token {
+		return "", fmt.Errorf("your token doesn't equal to original token")
+	}
+	return token, err
+}
+
 
 func NewAuthMongo(mongo *mongo.Client, redis *redis.Client) *AuthMongo {
 	return &AuthMongo{mongo: mongo, redis: redis}

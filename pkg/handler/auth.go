@@ -36,13 +36,18 @@ func (h *Handler) signIn(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	token, err := h.services.Authorization.GenerateToken(input.Id, input.Username, input.Password)
+	accessToken, err := h.services.Authorization.GenerateTokenAccessToken(input.Id, input.Username, input.Password)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	_, err = h.services.Authorization.GenerateTokenRefreshToken(input.Id, input.Username, input.Password)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"id":token,
+		"id":accessToken,
 	})
 }
 

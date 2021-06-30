@@ -8,8 +8,10 @@ import (
 
 type Authorization interface {
 	CreateUser(user _struct.User) (string, error)
-	GenerateToken(id primitive.ObjectID,username string, password string) (string, error)
-	ParseToken(token string) (string, error)
+	GenerateTokenAccessToken(id primitive.ObjectID,username string, password string) (string, error)
+	ParseAccessToken(token string) (string, error)
+	GenerateTokenRefreshToken(id primitive.ObjectID,username string, password string) (string, error)
+	ParseRefreshToken(token string) (string, error)
 }
 
 type Books interface {

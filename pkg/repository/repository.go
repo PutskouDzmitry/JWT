@@ -10,8 +10,10 @@ import (
 type Authorization interface {
 	CreateUser(user _struct.User) (string, error)
 	GetUser(id primitive.ObjectID, username, password string) (_struct.User, error)
-	SetToken(token string) (string, error)
-	GetToken(token string) (string, error)
+	SetAccessToken(token string) (string, error)
+	GetAccessToken(token string) (string, error)
+	SetRefreshToken(token string) (string, error)
+	GetRefreshToken(token string) (string, error)
 }
 
 type Books interface {
