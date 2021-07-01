@@ -4,26 +4,27 @@ import (
 	"crypto/sha1"
 	"errors"
 	"fmt"
+	"github.com/PutskouDzmitry/golang-training-Library/pkg/entity"
 	"github.com/PutskouDzmitry/golang-training-Library/pkg/repository"
-	"github.com/PutskouDzmitry/golang-training-Library/pkg/struct"
 	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
 const (
-	salt       = "hjqrhjqw124617ajfhajs"
-	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
-	tokenAccessTTL   = 30 * time.Minute
-	tokenRefreshTTL   = 12 * time.Hour
+	salt            = "hjqrhjqw124617ajfhajs"
+	signingKey      = "qrkjk#4#%35FSFJlja#4353KSFjH"
+	tokenAccessTTL  = 30 * time.Minute
+	tokenRefreshTTL = 12 * time.Hour
 )
+
 type AuthService struct {
 	repo repository.Authorization
 }
 
 type tokenClaims struct {
 	jwt.StandardClaims
-	userId string `json:"user_id"`
+	UserId string `json:"user_id"`
 }
 
 func (a *AuthService) GenerateTokenAccessToken(id primitive.ObjectID, username string, password string) (string, error) {
@@ -42,11 +43,11 @@ func (a *AuthService) GenerateTokenAccessToken(id primitive.ObjectID, username s
 	if err != nil {
 		return "", err
 	}
-	accessToken, err := a.repo.SetAccessToken(tokenStr)
+	err = a.repo.SetAccessToken(tokenStr, id.Hex())
 	if err != nil {
 		return "", err
 	}
-	return accessToken, nil
+	return tokenStr, nil
 }
 
 func (a *AuthService) GenerateTokenRefreshToken(id primitive.ObjectID, username string, password string) (string, error) {
@@ -65,21 +66,16 @@ func (a *AuthService) GenerateTokenRefreshToken(id primitive.ObjectID, username 
 	if err != nil {
 		return "", err
 	}
-	refreshToken, err := a.repo.SetRefreshToken(tokenStr)
+	err = a.repo.SetRefreshToken(tokenStr, id.Hex())
 	if err != nil {
 		return "", err
 	}
-	return refreshToken, nil
+	return tokenStr, nil
 }
 
-
 func (s *AuthService) ParseAccessToken(token string) (string, error) {
-	accessToken, err := s.repo.GetAccessToken(token)
-	if err != nil {
-		return "", err
-	}
-	tokens, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(accessToken *jwt.Token) (interface{}, error){
-		if _, ok := accessToken.Method.(*jwt.SigningMethodHMAC); !ok{
+	tokens, err := jwt.ParseWithClaims(token, &tokenClaims{}, func(accessToken *jwt.Token) (interface{}, error) {
+		if _, ok := accessToken.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid singing method")
 		}
 		return []byte(signingKey), nil
@@ -91,16 +87,20 @@ func (s *AuthService) ParseAccessToken(token string) (string, error) {
 	if !ok {
 		return "", errors.New("token claims are not of type tokenClaims")
 	}
-	return claims.userId, nil
+	_, err = s.repo.GetAccessToken(token, claims.UserId)
+	if err != nil {
+		return "", err
+	}
+	return claims.UserId, nil
 }
 
 func (s *AuthService) ParseRefreshToken(token string) (string, error) {
-	refreshToken, err := s.repo.GetRefreshToken(token)
+	refreshToken, err := s.repo.GetRefreshToken(token, "qwe")
 	if err != nil {
 		return "", err
 	}
-	tokens, err := jwt.ParseWithClaims(refreshToken, &tokenClaims{}, func(refreshToken *jwt.Token) (interface{}, error){
-		if _, ok := refreshToken.Method.(*jwt.SigningMethodHMAC); !ok{
+	tokens, err := jwt.ParseWithClaims(refreshToken, &tokenClaims{}, func(refreshToken *jwt.Token) (interface{}, error) {
+		if _, ok := refreshToken.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid singing method")
 		}
 		return []byte(signingKey), nil
@@ -112,14 +112,14 @@ func (s *AuthService) ParseRefreshToken(token string) (string, error) {
 	if !ok {
 		return "", errors.New("token claims are not of type tokenClaims")
 	}
-	return claims.userId, nil
+	return claims.UserId, nil
 }
 
 func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (a *AuthService) CreateUser(user _struct.User) (string, error) {
+func (a *AuthService) CreateUser(user entity.User) (string, error) {
 	user.Password = a.generatePasswordHash(user.Password)
 	return a.repo.CreateUser(user)
 }

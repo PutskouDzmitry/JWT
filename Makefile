@@ -12,7 +12,7 @@ fmt: ## automatically formats Go source code
 
 .PHONY: image
 image: fmt ## build image from Dockerfile ./docker/server/Dockerfile
-	@docker build -t kvarc/itest-app-v1 .
+	@docker build -t kvarc/final-test-docker .
 
 .PHONY: up
 up : image ## up docker compose

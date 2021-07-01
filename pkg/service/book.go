@@ -1,8 +1,8 @@
 package service
 
 import (
+	_struct "github.com/PutskouDzmitry/golang-training-Library/pkg/entity"
 	"github.com/PutskouDzmitry/golang-training-Library/pkg/repository"
-	_struct "github.com/PutskouDzmitry/golang-training-Library/pkg/struct"
 )
 
 type BookService struct {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/PutskouDzmitry/golang-training-Library/pkg/handler"
 	"github.com/PutskouDzmitry/golang-training-Library/pkg/repository"
 	"github.com/PutskouDzmitry/golang-training-Library/pkg/server"
@@ -12,43 +11,46 @@ import (
 )
 
 var (
-	user     = os.Getenv("DB_USERS_USER")
-	password = os.Getenv("DB_USERS_PASSWORD")
-	host = os.Getenv("DB_USERS_HOST")
-	port = os.Getenv("DB_USER_PORT")
+	passwordRedis = os.Getenv("REDIS_PASSWORD")
+	portRedis     = os.Getenv("REDIS_PORT")
+	hostRedis     = os.Getenv("REDIS_HOST")
+	userMongo     = os.Getenv("MONGO_USER")
+	passwordMongo = os.Getenv("MONGO_PASSWORD")
+	hostMongo     = os.Getenv("MONGO_HOST")
+	portMongo     = os.Getenv("MONGO_PORT")
 )
 
 func initValues() {
-	if user == "" {
-		user = "root"
+	if passwordRedis == "none" {
+		passwordRedis = ""
 	}
-	if password == "" {
-		password = "example"
+	if portRedis == "" {
+		portRedis = "6379"
 	}
-	if host == "" {
-		host = "localhost"
-		//host = "mongo"
+	if hostRedis == "" {
+		hostRedis = "localhost"
 	}
-	if port == "" {
-		port = "27017"
+	if userMongo == "" {
+		userMongo = "root"
+	}
+	if passwordMongo == "" {
+		passwordMongo = "example"
+	}
+	if hostMongo == "" {
+		hostMongo = "localhost"
+	}
+	if portMongo == "" {
+		portMongo = "27017"
 	}
 }
-
-func initClient(user string, password string, host string, port string) string{
-	return fmt.Sprintf("mongodb://%v:%v/?sslmode=disable", host, port)
-}
-
-//func initClient(user string, password string, host string, port string) string{
-//	return fmt.Sprintf("mongodb://%v:%v@%v:%v/?sslmode=disable", user, password, host, port)
-//}
 
 func main() {
 	initValues()
-	mongo, err := repository.NewMongodb(user, password, host, port)
+	mongo, err := repository.NewMongodb(userMongo, passwordMongo, hostMongo, portMongo)
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	redis, err := repository.NewRedisDb()
+	redis, err := repository.NewRedisDb(hostRedis, portRedis, passwordRedis)
 	if err != nil {
 		logrus.Fatal(err)
 	}
@@ -60,4 +62,3 @@ func main() {
 		log.Fatalf("error occured while running http server %s", err.Error())
 	}
 }
-

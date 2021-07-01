@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
-	_struct "github.com/PutskouDzmitry/golang-training-Library/pkg/struct"
+	_struct "github.com/PutskouDzmitry/golang-training-Library/pkg/entity"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -11,9 +11,8 @@ import (
 	"time"
 )
 
-
 //ReadAll output all data with table books
-func (b BookData) ReadAll() ([]_struct.Book, error){
+func (b BookData) ReadAll() ([]_struct.Book, error) {
 	db := b.collection.Database("book")
 	collection := db.Collection("book")
 	var books []_struct.Book
@@ -42,7 +41,7 @@ func (b BookData) ReadAll() ([]_struct.Book, error){
 }
 
 //Read read data in db
-func (b BookData) Read(id string) (_struct.Book, error){
+func (b BookData) Read(id string) (_struct.Book, error) {
 	db := b.collection.Database("book")
 	collection := db.Collection("book")
 	var book _struct.Book
@@ -105,13 +104,12 @@ func (B BookData) Delete(id string) error {
 	if err != nil {
 		return err
 	}
-	_ , err = collection.DeleteOne(ctx, bson.M{"_id": idObj})
+	_, err = collection.DeleteOne(ctx, bson.M{"_id": idObj})
 	if err != nil {
 		return err
 	}
 	return nil
 }
-
 
 //String output data in console
 //func (B Book) String() string {

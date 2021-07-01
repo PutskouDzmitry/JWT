@@ -12,8 +12,8 @@ type Server struct {
 
 func (s *Server) Run(port string, handler http.Handler) error {
 	s.httpServer = &http.Server{
-		Addr: ":" + port,
-		Handler:  handler,
+		Addr:        ":" + port,
+		Handler:     handler,
 		ReadTimeout: 1 * time.Second,
 	}
 	return s.httpServer.ListenAndServe()

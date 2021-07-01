@@ -2,12 +2,11 @@ package handler
 
 import (
 	"fmt"
-	_struct "github.com/PutskouDzmitry/golang-training-Library/pkg/struct"
+	_struct "github.com/PutskouDzmitry/golang-training-Library/pkg/entity"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
-
 
 func (h *Handler) getAllBooks(c *gin.Context) {
 	as, _ := c.Get("id")

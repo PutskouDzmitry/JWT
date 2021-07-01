@@ -40,13 +40,11 @@ func (h *Handler) userIdentity(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusOK, map[string]interface{}{
-			"Warn":"Please, choose login for update your tokens",
+			"Warn": "Please, choose login for update your tokens",
 		})
 		c.JSON(http.StatusOK, map[string]interface{}{
-			"id":accessToken,
+			"id": accessToken,
 		})
 	}
 	c.Set("userId", userId)
 }
-
-
