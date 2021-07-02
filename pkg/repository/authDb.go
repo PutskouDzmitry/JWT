@@ -18,7 +18,6 @@ type AuthMongo struct {
 }
 
 func (a *AuthMongo) SetAccessToken(token string, id string) error {
-	fmt.Println(token, id)
 	err := a.redis.Set(fmt.Sprintf("Access_token-%v", id), token, time.Minute*30).Err()
 	if err != nil {
 		return err
