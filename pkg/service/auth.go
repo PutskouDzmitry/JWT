@@ -95,12 +95,8 @@ func (s *AuthService) ParseAccessToken(token string) (string, error) {
 }
 
 func (s *AuthService) ParseRefreshToken(token string) (string, error) {
-	refreshToken, err := s.repo.GetRefreshToken(token, "qwe")
-	if err != nil {
-		return "", err
-	}
-	tokens, err := jwt.ParseWithClaims(refreshToken, &tokenClaims{}, func(refreshToken *jwt.Token) (interface{}, error) {
-		if _, ok := refreshToken.Method.(*jwt.SigningMethodHMAC); !ok {
+	tokens, err := jwt.ParseWithClaims(token, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid singing method")
 		}
 		return []byte(signingKey), nil
@@ -111,6 +107,10 @@ func (s *AuthService) ParseRefreshToken(token string) (string, error) {
 	claims, ok := tokens.Claims.(*tokenClaims)
 	if !ok {
 		return "", errors.New("token claims are not of type tokenClaims")
+	}
+	_, err = s.repo.GetRefreshToken(token, claims.UserId)
+	if err != nil {
+		return "", err
 	}
 	return claims.UserId, nil
 }

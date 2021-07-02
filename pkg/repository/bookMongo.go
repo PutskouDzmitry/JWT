@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
-	_struct "github.com/PutskouDzmitry/golang-training-Library/pkg/entity"
+	"github.com/PutskouDzmitry/golang-training-Library/pkg/entity"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -12,10 +12,10 @@ import (
 )
 
 //ReadAll output all data with table books
-func (b BookData) ReadAll() ([]_struct.Book, error) {
+func (b BookData) ReadAll() ([]entity.Book, error) {
 	db := b.collection.Database("book")
 	collection := db.Collection("book")
-	var books []_struct.Book
+	var books []entity.Book
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
@@ -23,7 +23,7 @@ func (b BookData) ReadAll() ([]_struct.Book, error) {
 	}
 	defer cursor.Close(ctx)
 	for cursor.Next(ctx) {
-		var book _struct.Book
+		var book entity.Book
 		err = cursor.Decode(&book)
 		if err != nil {
 			return nil, err
@@ -41,10 +41,10 @@ func (b BookData) ReadAll() ([]_struct.Book, error) {
 }
 
 //Read read data in db
-func (b BookData) Read(id string) (_struct.Book, error) {
+func (b BookData) Read(id string) (entity.Book, error) {
 	db := b.collection.Database("book")
 	collection := db.Collection("book")
-	var book _struct.Book
+	var book entity.Book
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	bookId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -56,11 +56,11 @@ func (b BookData) Read(id string) (_struct.Book, error) {
 	if err = cur.Decode(&book); err != nil {
 		return book, err
 	}
-	return _struct.Book{}, nil
+	return entity.Book{}, nil
 }
 
 //Add add data in db
-func (B BookData) Add(book _struct.Book) (string, error) {
+func (B BookData) Add(book entity.Book) (string, error) {
 	db := B.collection.Database("book")
 	collection := db.Collection("book")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)

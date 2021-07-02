@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	_struct "github.com/PutskouDzmitry/golang-training-Library/pkg/entity"
+	"github.com/PutskouDzmitry/golang-training-Library/pkg/entity"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -32,7 +32,7 @@ func (h *Handler) getOneBook(c *gin.Context) {
 }
 
 func (h *Handler) createBook(c *gin.Context) {
-	var input _struct.Book
+	var input entity.Book
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

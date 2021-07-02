@@ -44,6 +44,7 @@ services:
     ports:
       - ${REDIS_OUT_PORT}:${REDIS_INNER_PORT}
     healthcheck:
+      test: ${REDIS_COMMAND}
       interval: ${REDIS_INTERVAL}
       timeout: ${REDIS_TIMEOUT}
       retries: ${REDIS_RETRIES}
