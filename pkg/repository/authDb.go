@@ -27,9 +27,7 @@ func (a *AuthMongo) SetAccessToken(token string, id string) error {
 }
 
 func (a *AuthMongo) GetAccessToken(token string, id string) (string, error) {
-	fmt.Println(token, id)
 	val, err := a.redis.Get(fmt.Sprintf("Access_token-%v", id)).Result()
-	fmt.Println(val)
 	if err != nil {
 		return "", err
 	}
