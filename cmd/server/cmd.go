@@ -10,8 +10,6 @@ import (
 	"os"
 )
 
-//test
-
 var (
 	passwordRedis = os.Getenv("REDIS_PASSWORD")
 	portRedis     = os.Getenv("REDIS_PORT")
