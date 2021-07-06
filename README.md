@@ -3,6 +3,7 @@
 Application for get books with such operations as in table below:
 
 
+
 |             Path            | Method | Description                           | Body example                                                                                                                                                                                                                     |
 |:---------------------------:|--------|---------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | /books                   | GET    | get all books                      | ```[{"BookId":1,"AuthorId":2,"PublisherId":1,"NameOfBook":"Belka","YearOfPublication":"2020-10-10", "BookVolume":20, "Number":1},{"BookId":2,"AuthorId":1,"PublisherId":4,"NameOfBook":"Strelka","YearOfPublication":"2021-12-21", "BookVolume":220, "Number":11},{"BookId":2,"AuthorId":3,"PublisherId":4,"NameOfBook":"Space","YearOfPublication":"2010-10-10", "BookVolume":202, "Number":11}]``` |
